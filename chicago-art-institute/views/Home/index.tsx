@@ -51,16 +51,15 @@ const HomeScreen: React.FC  = ({ navigation }: NavigationInterface) => {
       if (isError) return <Text>Error loading data</Text>;
     
       return (
-        <FlatList
-          data={data?.pages.flatMap(page => page.data) || []}
-          renderItem={renderItem}
-          keyExtractor={item => item.id.toString()}
-          onEndReached={() => {
-            if (hasNextPage) fetchNextPage();
-          }}
-          onEndReachedThreshold={0.5}
-          ListFooterComponent={isFetchingNextPage ? <ActivityIndicator size="large" color="#0000ff" /> : null}
-          getItemLayout={getItemLayout}
+        <FlashList
+            data={data?.pages.flatMap(page => page.data) || []}
+            renderItem={renderItem}
+            keyExtractor={item => item.id.toString()}
+            onEndReached={() => {
+                if (hasNextPage) fetchNextPage();
+            }}
+            onEndReachedThreshold={0.5}
+            ListFooterComponent={isFetchingNextPage ? <ActivityIndicator size="large" color="#0000ff" /> : null}
         />
       );
 }
