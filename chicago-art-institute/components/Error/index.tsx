@@ -1,12 +1,12 @@
 import React from 'react';
 import { View, Text } from 'react-native';
 
-function Loading() {
+function Error() {
   return (
     <View>
-      <Text>Loading...</Text>
+      <Text>Ups! There's been an error...</Text>
     </View>
   );
 }
 
-export default Loading;
+export default Error;
