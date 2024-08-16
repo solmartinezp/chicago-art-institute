@@ -1,55 +1,46 @@
-import React, { useState, useEffect } from 'react';
-import { View, Text, ActivityIndicator, StyleSheet } from 'react-native';
-import AsyncStorage from '@react-native-async-storage/async-storage';
+import React, { useState, useCallback } from 'react';
+import { TouchableOpacity } from 'react-native';
+import { FlashList } from '@shopify/flash-list';
 
+import { useFavorites } from '../../context/favoriteContext';
 import NavigationInterface from '../../utils/interfaces/NavigationInterface';
-import Error from '../../components/Error';
-import Colors from '../../utils/colors';
-
-const FAVORITES_KEY = 'favorites';
-
+import Artwork from '../../utils/interfaces/Artwork';
+import ArtworkItem from '../../components/ArtworkItem';
+import NoFavorites from '../../components/NoFavorites';
 
 function FavoritesScreen({ navigation }: NavigationInterface) {
-  const [favorites, setFavorites] = useState<Set<number>>(new Set());
-  const [isLoading, setIsLoading] = useState<boolean>(true);
-  const [isError, setIsError] = useState<boolean>(false);
+  const [loadedImages, setLoadedImages] = useState<{ [key: string]: boolean }>({});
+  const { favorites } = useFavorites();
 
-  useEffect(() => {
-    const loadFavorites = async () => {
-      try {
-        const storedFavorites = await AsyncStorage.getItem(FAVORITES_KEY);
-        if (storedFavorites) {
-          setFavorites(new Set(JSON.parse(storedFavorites)));
-        }
-        setIsError(false);
-      } catch (error) {
-        setIsError(true);
-        console.error('Failed to load favorites', error);
-      } finally {
-        setIsLoading(false);
-      }
-    };
-    loadFavorites();
-  }, []);
+  const handleImageLoad = (id: number) => {
+    setLoadedImages(prevState => ({ ...prevState, [id]: true }));
+  };
 
-  if (isLoading) return <ActivityIndicator size="large" color={Colors.primaryColor} style={styles.loadingIndicator} />;
-  if (isError) return <Error />;
+  const renderItem = useCallback(({ item }: { item: Artwork }) => {
+    const isFavorite = favorites.has(item.id);
+
+    return (
+      <TouchableOpacity onPress={() => navigation.navigate('Details', { id: item.id })}>
+        <ArtworkItem
+          item={item}
+          isFavorite={isFavorite}
+          onImageLoad={handleImageLoad}
+          loadedImages={loadedImages}
+        />
+      </TouchableOpacity>
+    );
+  }, [favorites, loadedImages]);
+
+  if (favorites.size < 1) return <NoFavorites />;
 
   return (
-    <View>
-      <Text>Favorites Screen</Text>
-    </View>
+    <FlashList
+      data={Array.from(favorites.values())}
+      estimatedItemSize={235}
+      renderItem={renderItem}
+      keyExtractor={item => item.id.toString()}
+    />
   );
 }
-
-const styles = StyleSheet.create({
-  loadingIndicator: {
-    width: '100%',
-    height: '100%',
-    position: 'absolute',
-    justifyContent: 'center',
-    alignItems: 'center'
-  },
-});
 
 export default FavoritesScreen;

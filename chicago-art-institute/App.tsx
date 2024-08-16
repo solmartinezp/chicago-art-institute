@@ -8,6 +8,7 @@ import FavoritesScreen from './views/Favorites';
 import Entypo from '@expo/vector-icons/Entypo';
 import MaterialIcons from '@expo/vector-icons/MaterialIcons';
 import { QueryClient, QueryClientProvider } from 'react-query';
+import { FavoriteProvider } from './context/favoriteContext';
 import { Text } from 'react-native';
 
 const Tab = createBottomTabNavigator();
@@ -19,10 +20,12 @@ function App() {
   return (
     <QueryClientProvider client={queryClient}>
       <NavigationContainer>
-        <Stack.Navigator>
-          <Stack.Screen name="Tabs" options={{ headerShown: false, title: '' }} component={TabNavigator} />
-          <Stack.Screen name="Details" options={{ title: 'Detalle de la obra' }} component={DetailsScreen} />
-        </Stack.Navigator>
+        <FavoriteProvider>
+          <Stack.Navigator>
+            <Stack.Screen name="Tabs" options={{ headerShown: false, title: '' }} component={TabNavigator} />
+            <Stack.Screen name="Details" options={{ title: 'Detalle de la obra' }} component={DetailsScreen} />
+          </Stack.Navigator>
+        </FavoriteProvider>
       </NavigationContainer>
     </QueryClientProvider>
   );

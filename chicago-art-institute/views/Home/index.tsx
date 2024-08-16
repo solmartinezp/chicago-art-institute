@@ -5,6 +5,7 @@ import { useInfiniteQuery } from 'react-query';
 import { FlashList } from '@shopify/flash-list';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 
+import { useFavorites } from '../../context/favoriteContext';
 import NavigationInterface from '../../utils/interfaces/NavigationInterface';
 import Error from '../../components/Error';
 import Artwork from '../../utils/interfaces/Artwork';
@@ -23,7 +24,7 @@ const fetchArtworks = async ({ pageParam = 1 }) => {
 
 const HomeScreen: React.FC<NavigationInterface> = ({ navigation }) => {
   const [loadedImages, setLoadedImages] = useState<{ [key: string]: boolean }>({});
-  const [favorites, setFavorites] = useState<Set<number>>(new Set());
+  const { favorites, addFavorite, removeFavorite } = useFavorites();
 
   const {
     data,
@@ -40,33 +41,11 @@ const HomeScreen: React.FC<NavigationInterface> = ({ navigation }) => {
     },
   });
 
-  useEffect(() => {
-    const loadFavorites = async () => {
-      try {
-        const storedFavorites = await AsyncStorage.getItem(FAVORITES_KEY);
-        if (storedFavorites) {
-          setFavorites(new Set(JSON.parse(storedFavorites)));
-        }
-      } catch (error) {
-        console.error('Failed to load favorites', error);
-      }
-    };
-    loadFavorites();
-  }, []);
-
-  const handleFavoriteToggle = async (id: number) => {
-    const updatedFavorites = new Set(favorites);
-    if (updatedFavorites.has(id)) {
-      updatedFavorites.delete(id);
+  const handleFavoriteToggle = async (item: Artwork) => {
+    if (favorites.has(item.id)) {
+      await removeFavorite(item.id);
     } else {
-      updatedFavorites.add(id);
-    }
-    setFavorites(updatedFavorites);
-  
-    try {
-      await AsyncStorage.setItem(FAVORITES_KEY, JSON.stringify(Array.from(updatedFavorites)));
-    } catch (error) {
-      console.error('Failed to update favorites', error);
+      await addFavorite(item);
     }
   };
 
@@ -76,15 +55,13 @@ const HomeScreen: React.FC<NavigationInterface> = ({ navigation }) => {
 
   const renderItem = useCallback(({ item }: { item: Artwork }) => {
     const isFavorite = favorites.has(item.id);
-
+  
     return (
-      <TouchableOpacity
-        onPress={() => navigation.navigate('Details', { id: item.id })}
-      >
+      <TouchableOpacity onPress={() => navigation.navigate('Details', { id: item.id })}>
         <ArtworkItem
           item={item}
           isFavorite={isFavorite}
-          onFavoriteToggle={handleFavoriteToggle}
+          onFavoriteToggle={() => handleFavoriteToggle(item)}
           onImageLoad={handleImageLoad}
           loadedImages={loadedImages}
         />

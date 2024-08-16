@@ -1,47 +1,41 @@
 import React from 'react';
-import { View, Text, Image, Dimensions, StyleSheet, ActivityIndicator, TouchableOpacity } from 'react-native';
-import MaterialIcons from '@expo/vector-icons/MaterialIcons';
-
+import { View, Text, ActivityIndicator, Image, StyleSheet, TouchableOpacity, Dimensions } from 'react-native';
+import { MaterialIcons } from '@expo/vector-icons';
 import Colors from '../../utils/colors';
 import removeHtmlTags from '../../utils/regex';
 import DetailedArtwork from '../../utils/interfaces/DetailedArtwork';
 import Artwork from '../../utils/interfaces/Artwork';
 import Links from '../../utils/url';
 import { isArtwork } from '../../utils/typeGuard';
+import { useFavorites } from '../../context/favoriteContext';
 
 interface ArtworkItemProps {
   item: DetailedArtwork | Artwork;
   isFavorite: boolean;
-  onFavoriteToggle: (id: number) => void;
   onImageLoad: (id: number) => void;
   loadedImages: { [key: string]: boolean };
-  detailed? : boolean;
+  detailed?: boolean;
 }
 
-const ArtworkItem: React.FC<ArtworkItemProps> = ({ item, isFavorite, onFavoriteToggle, onImageLoad, loadedImages, detailed }) => {
+const ArtworkItem: React.FC<ArtworkItemProps> = ({ item, isFavorite, onImageLoad, loadedImages, detailed }) => {
+  const { addFavorite, removeFavorite } = useFavorites();
+
   const imageUrl = `${Links.IIIF_BASE_URL}/${item.image_id}/full/843,/0/default.jpg`;
 
   const description = isArtwork(item)
     ? (removeHtmlTags(item.description || '') || removeHtmlTags(item.short_description || '')) || removeHtmlTags(item.provenance_text || '')
     : removeHtmlTags(item.description || '');
 
+  const handleFavoriteToggle = () => {
+    if (isFavorite) {
+      removeFavorite(item.id);
+    } else {
+      addFavorite(item as Artwork);
+    }
+  };
+
   return (
-    <View
-      style={styles.itemContainer}
-    >
-      <View style={styles.header}>
-        <Text style={styles.title}>{item.title}</Text>
-        <TouchableOpacity
-          style={styles.favorite}
-          onPress={() => onFavoriteToggle(item.id)}
-        >
-          <MaterialIcons
-            name={isFavorite ? 'favorite' : 'favorite-border'}
-            size={30}
-            color={isFavorite ? Colors.primaryColor : Colors.secondaryColor}
-          />
-        </TouchableOpacity>
-      </View>
+    <View style={styles.itemContainer}>
       <View style={styles.imageContainer}>
         {!loadedImages[item.id] && <ActivityIndicator size="small" color={Colors.primaryColor} style={styles.loadingIndicator} />}
         <Image
@@ -51,65 +45,91 @@ const ArtworkItem: React.FC<ArtworkItemProps> = ({ item, isFavorite, onFavoriteT
           onLoad={() => onImageLoad(item.id)}
         />
       </View>
-      <Text style={styles.description}>{description}</Text>
+      <View style={styles.header}>
+        <View style={styles.headerTitle}>
+          <Text style={styles.title}>{item.title}</Text>
+          <TouchableOpacity
+            onPress={handleFavoriteToggle}
+          >
+            <MaterialIcons
+              name={isFavorite ? 'favorite' : 'favorite-border'}
+              size={30}
+              color={isFavorite ? Colors.primaryColor : Colors.secondaryColor}
+            />
+          </TouchableOpacity>
+        </View>
+        <Text style={styles.description}>{description}</Text>
+      </View>
     </View>
   );
 };
 
 const styles = StyleSheet.create({
   itemContainer: {
-    paddingTop: '2.5%',
-    marginLeft: '2.5%',
-    marginRight: '2.5%',
-    alignItems: 'center',
-    marginBottom: '2%',
-    marginTop: '5%',
-    backgroundColor: Colors.backgroundCard,
+    minHeight: 200,
+    alignSelf: 'center',
+    width: '95%',
+    display: 'flex',
+    flexDirection: 'row',
+    justifyContent: 'center',
+    marginBottom: '2.5%',
+    marginTop: '2.5%',
+    paddingBottom: '5%',
     borderRadius: 10,
+    backgroundColor: Colors.backgroundCard,
   },
   header: {
     display: 'flex',
+    flexDirection: 'column',
+    width: '60%',
+  },
+  headerTitle: {
+    marginTop: '5%',
+    display: 'flex',
     flexDirection: 'row',
     alignItems: 'center',
-    justifyContent: 'space-between',
-    width: '100%',
-    padding: '2.5%',
-    paddingLeft: '4%',
-    paddingRight: '4%',
-  },
-  favorite: {
-    marginBottom: '1.5%',
+    justifyContent: 'center',
   },
   title: {
+    position: 'relative',
     width: '70%',
+    marginTop: '2%',
     fontSize: 18,
     fontWeight: 'bold',
-    marginBottom: 5,
     color: Colors.secondaryColor,
   },
   description: {
     fontSize: 14,
-    paddingRight: '2.5%',
-    paddingLeft: '2.5%',
-    paddingBottom: '5%',
+    paddingTop: '5%',
+    width: '85%',
+    alignSelf: 'center',
+    textAlign: 'left'
   },
   imageContainer: {
+    width: '40%',
     position: 'relative',
-    width: Dimensions.get('window').width - 20,
-    height: 200,
-    display: 'flex',
-    justifyContent: 'center',
-    alignItems: 'center',
-    marginBottom: '5%',
+    margin: 'auto',
+    backgroundColor: '#fff',
+    padding: 10,
+    borderStyle: 'solid',
+    borderWidth: 15,
+    marginLeft: 5,
+    shadowColor: 'black',
+    shadowOffset: {
+      width: 0,
+      height: 4,
+    },
+    shadowOpacity: 0.3,
+    shadowRadius: 6,
+    elevation: 14,
   },
   image: {
     width: '100%',
-    height: '100%',
+    height: 100,
   },
   loadingIndicator: {
     width: '100%',
     height: '100%',
-    position: 'absolute',
     justifyContent: 'center',
     alignItems: 'center',
   },
