@@ -1,58 +1,50 @@
 import React, { useState, useEffect } from 'react';
 import { View, ActivityIndicator, StyleSheet } from 'react-native';
 import axios from 'axios';
+import { useQuery } from 'react-query';
+
+// context
 import { useFavorites } from '../../context/favoriteContext';
 
+// utils
 import Links from '../../utils/url';
-import Error from '../../components/Error';
 import Colors from '../../utils/colors';
-import DetailedArtwork from '../../utils/interfaces/DetailedArtwork';
+
+// components
+import Error from '../../components/Error';
 import DetailedArtworkItem from '../../components/DetailedArtworkItem';
 
-const API_URL = Links.API_URL;
-// const IIIF_BASE_URL = Links.IIIF_BASE_URL;
+// interfaces
+import DetailedArtwork from '../../utils/interfaces/DetailedArtwork';
+import DetailsComponentProps from '../../utils/interfaces/DetailedsComponentProps';
 
-interface DetailsComponentProps {
-  route: {
-    params: {
-      id: number
-    }
-  };
-}
+const fetchArtwork = async (id: number): Promise<DetailedArtwork> => {
+  const response = await axios.get<DetailedArtwork>(`${Links.API_URL}/${id}`);
+  return response.data;
+};
 
 const DetailsScreen: React.FC<DetailsComponentProps> = ({ route }) => {
   const { id } = route.params;
-  const [artwork, setArtwork] = useState<DetailedArtwork | null>(null);
-  const [loading, setLoading] = useState<boolean>(true);
-  const [error, setError] = useState<boolean>(false);
+
   const [loadedImages, setLoadedImages] = useState<{ [key: string]: boolean }>({});
-  const { favorites, addFavorite, removeFavorite } = useFavorites();
+  const { favorites } = useFavorites();
+  const [isFavorite, setIsFavorite] = useState<boolean>(false);
 
-  useEffect(() => {
-    const fetchArtwork = async (id: number) => {
-      try {
-        const response = await axios.get<DetailedArtwork>(`${API_URL}/${id}`);
-        setArtwork(response.data);
-        setError(false);
-      } catch (error) {
-       console.error('Failed to load', error);
-       setError(true);
-      } finally {
-        setLoading(false);
-      }
-    };
-
-    fetchArtwork(id);
-  }, [id]);
+  const { data: artwork, isLoading, isError } = useQuery(['artwork', id], () => fetchArtwork(id), {
+    staleTime: 5 * 60 * 1000,
+    cacheTime: 30 * 60 * 1000,
+  });
 
   const handleImageLoad = (id: number) => {
     setLoadedImages((prev) => ({ ...prev, [id]: true }));
   };
 
-  const isFavorite = favorites.has(id);
+  useEffect(() => {
+    setIsFavorite(favorites.has(id));
+  }, []);
 
-  if (loading) return <ActivityIndicator size="large" color={Colors.primaryColor} style={styles.loadingIndicator} />;;
-  if (error) return <Error />;
+  if (isLoading) return <ActivityIndicator size="large" color={Colors.primaryColor} style={styles.loadingIndicator} />;;
+  if (isError) return <Error />;
 
   return (
     <View>

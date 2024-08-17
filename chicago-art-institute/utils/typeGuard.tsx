@@ -1,4 +1,3 @@
-// typeGuards.ts
 import Artwork from './interfaces/Artwork';
 import DetailedArtwork from './interfaces/DetailedArtwork';
 

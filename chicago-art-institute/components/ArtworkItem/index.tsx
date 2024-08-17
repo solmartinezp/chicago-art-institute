@@ -1,20 +1,19 @@
 import React from 'react';
 import { View, Text, ActivityIndicator, Image, StyleSheet, TouchableOpacity, Dimensions } from 'react-native';
 import { MaterialIcons } from '@expo/vector-icons';
-import Colors from '../../utils/colors';
-import removeHtmlTags from '../../utils/regex';
-import Artwork from '../../utils/interfaces/Artwork';
-import Links from '../../utils/url';
-import { isArtwork } from '../../utils/typeGuard';
+
+// context
 import { useFavorites } from '../../context/favoriteContext';
 
-interface ArtworkItemProps {
-  item: Artwork;
-  isFavorite: boolean;
-  onImageLoad: (id: number) => void;
-  loadedImages: { [key: string]: boolean };
-  detailed?: boolean;
-}
+// utils
+import Colors from '../../utils/colors';
+import removeHtmlTags from '../../utils/regex';
+import Links from '../../utils/url';
+import { isArtwork } from '../../utils/typeGuard';
+
+// interfaces
+import Artwork from '../../utils/interfaces/Artwork';
+import ArtworkItemProps from '../../utils/interfaces/ArtworkItemProps';
 
 const ArtworkItem: React.FC<ArtworkItemProps> = ({ item, isFavorite, onImageLoad, loadedImages, detailed }) => {
   const { addFavorite, removeFavorite } = useFavorites();
@@ -22,8 +21,7 @@ const ArtworkItem: React.FC<ArtworkItemProps> = ({ item, isFavorite, onImageLoad
   const imageUrl = `${Links.IIIF_BASE_URL}/${item.image_id}/full/843,/0/default.jpg`;
 
   const description = isArtwork(item)
-    ? (removeHtmlTags(item.description || '') || removeHtmlTags(item.short_description || '')) || removeHtmlTags(item.provenance_text || '')
-    : removeHtmlTags(item.description || '');
+  && (removeHtmlTags(item.description || '') || removeHtmlTags(item.short_description || '')) || removeHtmlTags(item.provenance_text || '');
 
   const handleFavoriteToggle = () => {
     if (isFavorite) {
@@ -65,7 +63,6 @@ const ArtworkItem: React.FC<ArtworkItemProps> = ({ item, isFavorite, onImageLoad
 
 const styles = StyleSheet.create({
   itemContainer: {
-    minHeight: 200,
     alignSelf: 'center',
     width: '95%',
     display: 'flex',
@@ -131,6 +128,9 @@ const styles = StyleSheet.create({
     height: 100,
     justifyContent: 'center',
     alignItems: 'center',
+    position: 'absolute',
+    alignSelf: 'center',
+    paddingTop: 15,
   },
 });
 

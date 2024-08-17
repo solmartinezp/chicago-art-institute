@@ -1,19 +1,19 @@
 import React from 'react';
 import { View, Text, ActivityIndicator, Image, StyleSheet, TouchableOpacity, ScrollView } from 'react-native';
 import { MaterialIcons } from '@expo/vector-icons';
+
+// context
+import { useFavorites } from '../../context/favoriteContext';
+
+// utils
 import Colors from '../../utils/colors';
 import removeHtmlTags from '../../utils/regex';
+
+// interfaces
 import DetailedArtwork from '../../utils/interfaces/DetailedArtwork';
 import Artwork from '../../utils/interfaces/Artwork';
 import Links from '../../utils/url';
-import { useFavorites } from '../../context/favoriteContext';
-
-interface DetailedArtworkItemProps {
-  item: DetailedArtwork;
-  isFavorite: boolean;
-  onImageLoad: (id: number) => void;
-  loadedImages: { [key: string]: boolean };
-}
+import DetailedArtworkItemProps from '../../utils/interfaces/DetailedArtworkItemProps';
 
 const convertToArtwork = (detailedArtwork: DetailedArtwork): Artwork => {
     return {
@@ -43,13 +43,13 @@ const DetailedArtworkItem: React.FC<DetailedArtworkItemProps> = ({ item, isFavor
     }
   };
 
-  
-
   return (
     <ScrollView style={styles.itemContainer}>
       <View style={styles.imageContainer}>
         {!loadedImages[item.data.id] && 
-          <ActivityIndicator size="small" color={Colors.primaryColor} style={styles.loadingIndicator} />
+          <View style={styles.loadingContainer} >
+            <ActivityIndicator size="small" color={Colors.primaryColor} />
+          </View>
         }
         <Image
           source={{ uri: imageUrl }}
@@ -195,7 +195,7 @@ const styles = StyleSheet.create({
     marginBottom: '5%',
   },
   imageContainer: {
-    width: '95%',
+    width: '100%',
     position: 'relative',
     margin: 'auto',
     marginTop: '5%',
@@ -240,11 +240,14 @@ const styles = StyleSheet.create({
     alignSelf: 'center',
     marginBottom: '2%',
   },
-  loadingIndicator: {
+  loadingContainer: {
     width: '100%',
     height: 300,
+    alignSelf: 'center',
+    position: 'absolute',
+    display: 'flex',
     justifyContent: 'center',
-    alignItems: 'center',
+    alignItems: 'center'
   },
 });
 

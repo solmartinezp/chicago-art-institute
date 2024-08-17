@@ -2,9 +2,14 @@ import React, { useState, useCallback } from 'react';
 import { TouchableOpacity } from 'react-native';
 import { FlashList } from '@shopify/flash-list';
 
+// context
 import { useFavorites } from '../../context/favoriteContext';
+
+// utils
 import NavigationInterface from '../../utils/interfaces/NavigationInterface';
 import Artwork from '../../utils/interfaces/Artwork';
+
+// components
 import ArtworkItem from '../../components/ArtworkItem';
 import NoFavorites from '../../components/NoFavorites';
 

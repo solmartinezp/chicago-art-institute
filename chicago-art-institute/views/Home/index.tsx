@@ -1,30 +1,32 @@
-import React, { useCallback, useState, useEffect } from 'react';
+import React, { useCallback, useState } from 'react';
 import { StyleSheet, Dimensions, ActivityIndicator, TouchableOpacity } from 'react-native';
 import axios from 'axios';
 import { useInfiniteQuery } from 'react-query';
 import { FlashList } from '@shopify/flash-list';
-import AsyncStorage from '@react-native-async-storage/async-storage';
 
+// context
 import { useFavorites } from '../../context/favoriteContext';
+
+// utils
 import NavigationInterface from '../../utils/interfaces/NavigationInterface';
-import Error from '../../components/Error';
-import Artwork from '../../utils/interfaces/Artwork';
 import Colors from '../../utils/colors';
 import Links from '../../utils/url';
+import Artwork from '../../utils/interfaces/Artwork';
+
+// components
+import Error from '../../components/Error';
 import ArtworkItem from '../../components/ArtworkItem';
 
 const PAGE_SIZE = 20;
-const API_URL = Links.API_URL;
-const FAVORITES_KEY = 'favorites';
 
 const fetchArtworks = async ({ pageParam = 1 }) => {
-  const response = await axios.get(`${API_URL}?page=${pageParam}&limit=${PAGE_SIZE}`);
+  const response = await axios.get(`${Links.API_URL}?page=${pageParam}&limit=${PAGE_SIZE}`);
   return response.data;
 };
 
 const HomeScreen: React.FC<NavigationInterface> = ({ navigation }) => {
   const [loadedImages, setLoadedImages] = useState<{ [key: string]: boolean }>({});
-  const { favorites, addFavorite, removeFavorite } = useFavorites();
+  const { favorites  } = useFavorites();
 
   const {
     data,

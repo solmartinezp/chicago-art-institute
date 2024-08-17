@@ -1,16 +1,11 @@
-// FavoriteContext.tsx
 import React, { createContext, useState, useContext, useEffect } from 'react';
 import AsyncStorage from '@react-native-async-storage/async-storage';
+
+// interfaces
 import Artwork from '../utils/interfaces/Artwork';
+import FavoriteContextType from '../utils/interfaces/FavoriteContextType';
 
 const FAVORITES_KEY = 'favorites';
-
-interface FavoriteContextType {
-  favorites: Map<number, Artwork>;
-  addFavorite: (item: Artwork) => void;
-  removeFavorite: (id: number) => void;
-  loadFavorites: () => void;
-}
 
 const FavoriteContext = createContext<FavoriteContextType | undefined>(undefined);
 
