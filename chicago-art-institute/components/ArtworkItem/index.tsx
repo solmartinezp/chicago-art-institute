@@ -3,14 +3,13 @@ import { View, Text, ActivityIndicator, Image, StyleSheet, TouchableOpacity, Dim
 import { MaterialIcons } from '@expo/vector-icons';
 import Colors from '../../utils/colors';
 import removeHtmlTags from '../../utils/regex';
-import DetailedArtwork from '../../utils/interfaces/DetailedArtwork';
 import Artwork from '../../utils/interfaces/Artwork';
 import Links from '../../utils/url';
 import { isArtwork } from '../../utils/typeGuard';
 import { useFavorites } from '../../context/favoriteContext';
 
 interface ArtworkItemProps {
-  item: DetailedArtwork | Artwork;
+  item: Artwork;
   isFavorite: boolean;
   onImageLoad: (id: number) => void;
   loadedImages: { [key: string]: boolean };
@@ -129,7 +128,7 @@ const styles = StyleSheet.create({
   },
   loadingIndicator: {
     width: '100%',
-    height: '100%',
+    height: 100,
     justifyContent: 'center',
     alignItems: 'center',
   },

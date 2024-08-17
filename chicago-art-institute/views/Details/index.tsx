@@ -1,15 +1,16 @@
 import React, { useState, useEffect } from 'react';
-import { View, Text, ActivityIndicator, StyleSheet } from 'react-native';
+import { View, ActivityIndicator, StyleSheet } from 'react-native';
 import axios from 'axios';
+import { useFavorites } from '../../context/favoriteContext';
 
 import Links from '../../utils/url';
 import Error from '../../components/Error';
 import Colors from '../../utils/colors';
 import DetailedArtwork from '../../utils/interfaces/DetailedArtwork';
-import ArtworkItem from '../../components/ArtworkItem';
+import DetailedArtworkItem from '../../components/DetailedArtworkItem';
 
 const API_URL = Links.API_URL;
-const IIIF_BASE_URL = Links.IIIF_BASE_URL;
+// const IIIF_BASE_URL = Links.IIIF_BASE_URL;
 
 interface DetailsComponentProps {
   route: {
@@ -24,7 +25,8 @@ const DetailsScreen: React.FC<DetailsComponentProps> = ({ route }) => {
   const [artwork, setArtwork] = useState<DetailedArtwork | null>(null);
   const [loading, setLoading] = useState<boolean>(true);
   const [error, setError] = useState<boolean>(false);
-
+  const [loadedImages, setLoadedImages] = useState<{ [key: string]: boolean }>({});
+  const { favorites, addFavorite, removeFavorite } = useFavorites();
 
   useEffect(() => {
     const fetchArtwork = async (id: number) => {
@@ -41,15 +43,27 @@ const DetailsScreen: React.FC<DetailsComponentProps> = ({ route }) => {
     };
 
     fetchArtwork(id);
+  }, [id]);
 
-  }, []);
+  const handleImageLoad = (id: number) => {
+    setLoadedImages((prev) => ({ ...prev, [id]: true }));
+  };
+
+  const isFavorite = favorites.has(id);
 
   if (loading) return <ActivityIndicator size="large" color={Colors.primaryColor} style={styles.loadingIndicator} />;;
   if (error) return <Error />;
 
   return (
     <View>
-      <Text>{id}</Text>
+        {artwork && (
+        <DetailedArtworkItem
+          item={artwork}
+          isFavorite={isFavorite}
+          onImageLoad={handleImageLoad}
+          loadedImages={loadedImages}
+        />
+      )}
     </View>
   );
 }

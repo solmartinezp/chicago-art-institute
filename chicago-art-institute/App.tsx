@@ -41,7 +41,6 @@ function TabNavigator() {
           return (
             <Text
               style={{
-
                 color: focused ? '#b50938' : '#494848',
                 fontFamily: 'Roboto',
                 fontSize: 16,

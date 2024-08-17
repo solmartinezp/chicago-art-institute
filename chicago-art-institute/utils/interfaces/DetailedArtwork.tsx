@@ -8,13 +8,11 @@ export default interface DetailedArtwork {
         medium_display: string;
         credit_line: string;
         gallery_title: string;
-        info: {
-            license_text: string;
-            version: string;
-        };
+        place_of_origin: string;
+        inscriptions: string;
+        publication_history: string;
         thumbnail: {
             alt_text: string;
         };
-        place_of_origin: string;
     }
 }

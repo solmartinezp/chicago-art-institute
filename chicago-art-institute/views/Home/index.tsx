@@ -41,14 +41,6 @@ const HomeScreen: React.FC<NavigationInterface> = ({ navigation }) => {
     },
   });
 
-  const handleFavoriteToggle = async (item: Artwork) => {
-    if (favorites.has(item.id)) {
-      await removeFavorite(item.id);
-    } else {
-      await addFavorite(item);
-    }
-  };
-
   const handleImageLoad = (id: number) => {
     setLoadedImages(prevState => ({ ...prevState, [id]: true }));
   };
@@ -61,7 +53,6 @@ const HomeScreen: React.FC<NavigationInterface> = ({ navigation }) => {
         <ArtworkItem
           item={item}
           isFavorite={isFavorite}
-          onFavoriteToggle={() => handleFavoriteToggle(item)}
           onImageLoad={handleImageLoad}
           loadedImages={loadedImages}
         />
