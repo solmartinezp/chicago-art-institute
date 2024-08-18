@@ -24,7 +24,6 @@
     ```bash
    npm start
 
-## NOTA:
 **Si hay algún inconveniente levantando el proyecto, utilizar comando:**
     
     ```bash
