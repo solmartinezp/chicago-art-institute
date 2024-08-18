@@ -2,6 +2,13 @@
 
 ## AUTHOR: Sol Martinez (@solmartinezp)
 
+**Este repositorio es un proyecto destinado al proceso de selección de Banza**
+**En él se encuentra el desarrollo de una app que sigue las instrucciones establecidas por el equipo de Banza:**
+1. **Permite a el usuario navegar por el catálogo de obras de arte expuestas mediante la API del Instituto de Arte de Chicago.**
+2. **El usuario puede ver una miniatura y una breve descripción de cada obra de arte en la pantalla principal de la aplicación.**
+3. **Al hacer clic en una miniatura, el usuario es dirigido a una pantalla detallada de la obra de arte que contenga una imagen de mejor calidad y más información detallada sobre la pieza.**
+4. **El usuario puede  guardar algunas obras como favoritas y explorarlas incluso después de que la aplicación esté completamente cerrada y vuelta a abrir.**
+
 ## Getting Started
 
 1. **Clonar el Repositorio**
