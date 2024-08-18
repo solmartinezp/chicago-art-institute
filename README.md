@@ -24,9 +24,8 @@
     ```bash
    npm start
 
-**Si hay algún inconveniente levantando el proyecto, utilizar comando:**
+**NOTA: Si hay algún inconveniente levantando el proyecto, utilizar comando:**
     
-    ```bash
-   npm run tunnel
+    ```bash npm run tunnel
 
 **Controla tener Expo Go instalado en tu dispositivo móvil para escanear el código QR y inicializar la app.**
