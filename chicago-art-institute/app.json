@@ -4,10 +4,10 @@
     "slug": "chicago-art-institute",
     "version": "1.0.0",
     "orientation": "portrait",
-    "icon": "./assets/chicago_logo.svg",
+    "icon": "./assets/chicago_logo.png",
     "userInterfaceStyle": "light",
     "splash": {
-      "image": "./assets/chicago_logo.svg",
+      "image": "./assets/chicago_logo.png",
       "resizeMode": "contain",
       "backgroundColor": "#b60235"
     },
@@ -16,12 +16,12 @@
     },
     "android": {
       "adaptiveIcon": {
-        "foregroundImage": "./assets/chicago_logo.svg",
+        "foregroundImage": "./assets/chicago_logo.png",
         "backgroundColor": "#b60235"
       }
     },
     "web": {
-      "favicon": "./assets/chicago_logo.svg"
+      "favicon": "./assets/chicago_logo.png"
     }
   }
 }
