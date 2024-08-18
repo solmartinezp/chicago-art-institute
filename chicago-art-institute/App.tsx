@@ -21,7 +21,35 @@ function App() {
     <QueryClientProvider client={queryClient}>
       <NavigationContainer>
         <FavoriteProvider>
-          <Stack.Navigator>
+          <Stack.Navigator
+            screenOptions={{
+              cardStyleInterpolator: ({current: {progress}}) => ({
+                cardStyle: {
+                  opacity: progress.interpolate({
+                    inputRange: [0, 1],
+                    outputRange: [0, 1],
+                  }),
+                  transform: [
+                    {
+                      perspective: 1000,
+                    },
+                    {
+                      rotateY: progress.interpolate({
+                        inputRange: [0, 1],
+                        outputRange: ['180deg', '0deg'],
+                      }),
+                    },
+                    {
+                      scale: progress.interpolate({
+                        inputRange: [0, 1],
+                        outputRange: [0.5, 1],
+                      }),
+                    },  
+                  ],
+                },
+              }),
+            }}
+          >
             <Stack.Screen name="Tabs" options={{ headerShown: false, title: '' }} component={TabNavigator} />
             <Stack.Screen name="Details" options={{ title: 'Detalle de la obra' }} component={DetailsScreen} />
           </Stack.Navigator>

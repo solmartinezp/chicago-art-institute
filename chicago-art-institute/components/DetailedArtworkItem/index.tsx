@@ -243,6 +243,7 @@ const styles = StyleSheet.create({
   loadingContainer: {
     width: '100%',
     height: 300,
+    paddingTop: '5%',
     alignSelf: 'center',
     position: 'absolute',
     display: 'flex',

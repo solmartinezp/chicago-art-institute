@@ -70,6 +70,7 @@ const styles = StyleSheet.create({
     justifyContent: 'center',
     marginBottom: '2.5%',
     marginTop: '2.5%',
+    paddingTop: '5%',
     paddingBottom: '5%',
     borderRadius: 10,
     backgroundColor: Colors.backgroundCard,
@@ -80,15 +81,14 @@ const styles = StyleSheet.create({
     width: '60%',
   },
   headerTitle: {
-    marginTop: '5%',
     display: 'flex',
     flexDirection: 'row',
     alignItems: 'center',
-    justifyContent: 'center',
+    justifyContent: 'space-around',
   },
   title: {
     position: 'relative',
-    width: '70%',
+    width: '65%',
     marginTop: '2%',
     fontSize: 18,
     fontWeight: 'bold',
@@ -102,7 +102,7 @@ const styles = StyleSheet.create({
     textAlign: 'left'
   },
   imageContainer: {
-    width: '40%',
+    width: '38%',
     position: 'relative',
     margin: 'auto',
     backgroundColor: '#fff',

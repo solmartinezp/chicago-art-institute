@@ -1,5 +1,5 @@
-import React, { useCallback, useState } from 'react';
-import { StyleSheet, Dimensions, ActivityIndicator, TouchableOpacity } from 'react-native';
+import React, { useCallback, useState, useMemo } from 'react';
+import { StyleSheet, Dimensions, ActivityIndicator, TouchableOpacity, ScrollView, TouchableWithoutFeedback, Keyboard } from 'react-native';
 import axios from 'axios';
 import { useInfiniteQuery } from 'react-query';
 import { FlashList } from '@shopify/flash-list';
@@ -16,6 +16,7 @@ import Artwork from '../../utils/interfaces/Artwork';
 // components
 import Error from '../../components/Error';
 import ArtworkItem from '../../components/ArtworkItem';
+import SearchBar from '../../components/SearchBar';
 
 const PAGE_SIZE = 20;
 
@@ -26,6 +27,7 @@ const fetchArtworks = async ({ pageParam = 1 }) => {
 
 const HomeScreen: React.FC<NavigationInterface> = ({ navigation }) => {
   const [loadedImages, setLoadedImages] = useState<{ [key: string]: boolean }>({});
+  const [searchQuery, setSearchQuery] = useState<string>('');
   const { favorites  } = useFavorites();
 
   const {
@@ -62,21 +64,40 @@ const HomeScreen: React.FC<NavigationInterface> = ({ navigation }) => {
     );
   }, [favorites, loadedImages]);
 
+   // Filter artworks based on the search query
+   const filteredData = useMemo(() => {
+    const allArtworks = data?.pages.flatMap(page => page.data) || [];
+    return allArtworks.filter(artwork => artwork.title.toLowerCase().includes(searchQuery.toLowerCase()));
+  }, [data, searchQuery]);
+
+  const dismissKeyboard = () => {
+    Keyboard.dismiss();
+  };
+
   if (isLoading) return <ActivityIndicator size="large" color={Colors.primaryColor} style={styles.loadingIndicator} />;
   if (isError) return <Error />;
 
   return (
-    <FlashList
-      data={data?.pages.flatMap(page => page.data) || []}
-      estimatedItemSize={235}
-      renderItem={renderItem}
-      keyExtractor={item => item.id.toString()}
-      onEndReached={() => {
-        if (hasNextPage) fetchNextPage();
-      }}
-      onEndReachedThreshold={0.5}
-      ListFooterComponent={isFetchingNextPage ? <ActivityIndicator size="large" color="#0000ff" /> : null}
-    />
+    <TouchableWithoutFeedback onPress={dismissKeyboard}>
+      <ScrollView
+      >
+      <SearchBar
+        value={searchQuery}
+        onChangeText={setSearchQuery}
+      />
+      <FlashList
+        data={filteredData}
+        estimatedItemSize={235}
+        renderItem={renderItem}
+        keyExtractor={item => item.id.toString()}
+        onEndReached={() => {
+          if (hasNextPage) fetchNextPage();
+        }}
+        onEndReachedThreshold={0.5}
+        ListFooterComponent={isFetchingNextPage ? <ActivityIndicator size="large" color="#0000ff" /> : null}
+      />
+    </ScrollView>
+  </TouchableWithoutFeedback>
   );
 }
 
