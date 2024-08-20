@@ -15,8 +15,8 @@ import { isArtwork } from '../../utils/typeGuard';
 import Artwork from '../../utils/interfaces/Artwork';
 import ArtworkItemProps from '../../utils/interfaces/ArtworkItemProps';
 
-const ArtworkItem: React.FC<ArtworkItemProps> = ({ item, isFavorite, onImageLoad, loadedImages, detailed }) => {
-  const { addFavorite, removeFavorite } = useFavorites();
+const ArtworkItem: React.FC<ArtworkItemProps> = ({ item, onImageLoad, loadedImages, detailed }) => {
+  const { addFavorite, removeFavorite, favorites } = useFavorites();
 
   const imageUrl = `${Links.IIIF_BASE_URL}/${item.image_id}/full/843,/0/default.jpg`;
 
@@ -24,7 +24,7 @@ const ArtworkItem: React.FC<ArtworkItemProps> = ({ item, isFavorite, onImageLoad
   && (removeHtmlTags(item.description || '') || removeHtmlTags(item.short_description || '')) || removeHtmlTags(item.provenance_text || '');
 
   const handleFavoriteToggle = () => {
-    if (isFavorite) {
+    if (favorites.has(item.id)) {
       removeFavorite(item.id);
     } else {
       addFavorite(item as Artwork);
@@ -49,9 +49,9 @@ const ArtworkItem: React.FC<ArtworkItemProps> = ({ item, isFavorite, onImageLoad
             onPress={handleFavoriteToggle}
           >
             <MaterialIcons
-              name={isFavorite ? 'favorite' : 'favorite-border'}
+              name={favorites.has(item.id) ? 'favorite' : 'favorite-border'}
               size={30}
-              color={isFavorite ? Colors.primaryColor : Colors.secondaryColor}
+              color={favorites.has(item.id) ? Colors.primaryColor : Colors.secondaryColor}
             />
           </TouchableOpacity>
         </View>

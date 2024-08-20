@@ -1,7 +1,7 @@
 import React from 'react';
 import { NavigationContainer } from '@react-navigation/native';
 import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
-import { createStackNavigator } from '@react-navigation/stack';
+import { createStackNavigator  } from '@react-navigation/stack';
 import HomeScreen from './views/Home';
 import DetailsScreen from './views/Details';
 import FavoritesScreen from './views/Favorites';
@@ -9,7 +9,7 @@ import Entypo from '@expo/vector-icons/Entypo';
 import MaterialIcons from '@expo/vector-icons/MaterialIcons';
 import { QueryClient, QueryClientProvider } from 'react-query';
 import { FavoriteProvider } from './context/favoriteContext';
-import { Text } from 'react-native';
+import { Text, Easing } from 'react-native';
 
 const Tab = createBottomTabNavigator();
 const Stack = createStackNavigator();
@@ -21,35 +21,7 @@ function App() {
     <QueryClientProvider client={queryClient}>
       <NavigationContainer>
         <FavoriteProvider>
-          <Stack.Navigator
-            screenOptions={{
-              cardStyleInterpolator: ({current: {progress}}) => ({
-                cardStyle: {
-                  opacity: progress.interpolate({
-                    inputRange: [0, 1],
-                    outputRange: [0, 1],
-                  }),
-                  transform: [
-                    {
-                      perspective: 1000,
-                    },
-                    {
-                      rotateY: progress.interpolate({
-                        inputRange: [0, 1],
-                        outputRange: ['180deg', '0deg'],
-                      }),
-                    },
-                    {
-                      scale: progress.interpolate({
-                        inputRange: [0, 1],
-                        outputRange: [0.5, 1],
-                      }),
-                    },  
-                  ],
-                },
-              }),
-            }}
-          >
+          <Stack.Navigator>
             <Stack.Screen name="Tabs" options={{ headerShown: false, title: '' }} component={TabNavigator} />
             <Stack.Screen name="Details" options={{ title: 'Detalle de la obra' }} component={DetailsScreen} />
           </Stack.Navigator>

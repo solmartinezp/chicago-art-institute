@@ -27,7 +27,7 @@ const convertToArtwork = (detailedArtwork: DetailedArtwork): Artwork => {
   };
 
 const DetailedArtworkItem: React.FC<DetailedArtworkItemProps> = ({ item, isFavorite, onImageLoad, loadedImages }) => {
-  const { addFavorite, removeFavorite } = useFavorites();
+  const { addFavorite, removeFavorite, favorites } = useFavorites();
 
   const imageUrl = `${Links.IIIF_BASE_URL}/${item.data.image_id}/full/843,/0/default.jpg`;
 
@@ -36,7 +36,7 @@ const DetailedArtworkItem: React.FC<DetailedArtworkItemProps> = ({ item, isFavor
 
   const handleFavoriteToggle = () => {
     const artwork = convertToArtwork(item);
-    if (isFavorite) {
+    if (favorites.has(artwork.id)) {
       removeFavorite(artwork.id);
     } else {
       addFavorite(artwork);
@@ -65,9 +65,9 @@ const DetailedArtworkItem: React.FC<DetailedArtworkItemProps> = ({ item, isFavor
             onPress={handleFavoriteToggle}
           >
             <MaterialIcons
-              name={isFavorite ? 'favorite' : 'favorite-border'}
+              name={favorites.has(item.data.id) ? 'favorite' : 'favorite-border'}
               size={30}
-              color={isFavorite ? Colors.primaryColor : Colors.secondaryColor}
+              color={favorites.has(item.data.id) ? Colors.primaryColor : Colors.secondaryColor}
             />
           </TouchableOpacity>
         </View>

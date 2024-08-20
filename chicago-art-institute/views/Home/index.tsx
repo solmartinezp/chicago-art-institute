@@ -64,7 +64,6 @@ const HomeScreen: React.FC<NavigationInterface> = ({ navigation }) => {
     );
   }, [favorites, loadedImages]);
 
-   // Filter artworks based on the search query
    const filteredData = useMemo(() => {
     const allArtworks = data?.pages.flatMap(page => page.data) || [];
     return allArtworks.filter(artwork => artwork.title.toLowerCase().includes(searchQuery.toLowerCase()));
